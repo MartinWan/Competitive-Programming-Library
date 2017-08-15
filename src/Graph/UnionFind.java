@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 /**
   * Weighted quick union with path compression.
   * Unions N elements in O(Nlog*(N)) ~ O(N)
