@@ -41,8 +41,4 @@ class KMP {
 
     return -1; // not found
   }
-
-  public static void main(String[] args) {
-    System.out.println(match("bcabc", "abc"));    
-  }
 }
