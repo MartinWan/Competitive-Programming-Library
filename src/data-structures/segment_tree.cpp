@@ -4,9 +4,9 @@
 using namespace std;
 
 /*
- * A segment tree is a data structure for efficiently running 
+ * A segment tree is a data structure for efficiently running
  * an aggregate query on an array segment array[start...end] and
- * efficiently updating an array segment array[start...end]. 
+ * efficiently updating an array segment array[start...end].
  * Both update() and query() have O(logN) performance, where N is the size
  * of the underlying array.
  *
@@ -14,14 +14,15 @@ using namespace std;
  * but can be easily modified to answer range sum queries. Code
  * is based off of post by GeeksForGeeks: http://www.geeksforgeeks.org/lazy-propagation-in-segment-tree/
  */
+template<class T>
 class segment_tree {
   private:
-    vector<int> min_heap; // full binary tree stored in an array. Nodes are the aggregate of their two children (array value if leaf)
-    vector<int> max_heap; 
-    vector<int> lazy; // lazy[i] = pending updates on node i
+    vector<T> min_heap; // full binary tree stored in an array. Nodes are the aggregate of their two children (array value if leaf)
+    vector<T> max_heap;
+    vector<T> lazy; // lazy[i] = pending updates on node i
     int n; // size of underlying array, i.e. number of leaves
 
-    void build(vector<int>& arr, int ss, int se, int si) {
+    void build(vector<T>& arr, int ss, int se, int si) {
       if (ss > se) return; // out of range
 
       if (ss == se) { // leaf
@@ -43,13 +44,13 @@ class segment_tree {
      * [i, j] = [ss, se] intersect [us, ue]
      * si is the index of the node representing segment ss, se]
      */
-    void update(int si, int ss, int se, int us, int ue, int diff) {
+    void update(int si, int ss, int se, int us, int ue, T diff) {
       fix(si, ss, se);
 
       if (disjoint(ss, se, us, ue)) return;
 
       if (subset(ss, se, us, ue)) {
-        min_heap[si] += diff; 
+        min_heap[si] += diff;
         max_heap[si] += diff;
 
         if (ss != se) {
@@ -74,18 +75,18 @@ class segment_tree {
      * [i, j] = [ss, se] intersect [qs, qe].
      * si is the index of the node representing segment [ss, se]
      */
-    int query(int ss, int se, int qs, int qe, int si, bool is_min_query) {
+     T query(int ss, int se, int qs, int qe, int si, bool is_min_query) {
       fix(si, ss, se);
 
-      if (disjoint(ss, se, qs, qe)) return is_min_query? INT_MAX : INT_MIN;
+      if (disjoint(ss, se, qs, qe)) return is_min_query? numeric_limits<T>::max() : numeric_limits<T>::min();
 
       if (subset(ss, se, qs, qe)) return is_min_query? min_heap[si] : max_heap[si];
 
       // [ss, se] and [qs, qe] have some intersection
       int mid = (ss+se)/2;
 
-      int left_query = query(ss, mid, qs, qe, 2*si+1, is_min_query);
-      int right_query = query(mid+1, se, qs, qe, 2*si+2, is_min_query);
+      T left_query = query(ss, mid, qs, qe, 2*si+1, is_min_query);
+      T right_query = query(mid+1, se, qs, qe, 2*si+2, is_min_query);
 
       return is_min_query? min(left_query, right_query) : max(left_query, right_query);
     }
@@ -115,29 +116,29 @@ class segment_tree {
     }
 
   public:
-    segment_tree(vector<int> arr) {
+    segment_tree(vector<T> arr) {
       n = arr.size();
       int nodes = 2*pow(2, ceil(log2(n))) - 1; // # nodes <= 2*2^ceil(lg(n)) - 1
-      min_heap = vector<int>(nodes);
-      max_heap = vector<int>(nodes);
-      lazy = vector<int>(nodes);
+      min_heap = vector<T>(nodes);
+      max_heap = vector<T>(nodes);
+      lazy = vector<T>(nodes);
       build(arr, 0, n-1, 0);
     }
 
-    void update(int us, int ue, int diff) {
+    void update(int us, int ue, T diff) {
       update(0, 0, n-1, us, ue, diff);
     }
 
-    int min_query(int qs, int qe) {
+    T min_query(int qs, int qe) {
       if (qs < 0 || qe > n-1 || qs > qe) {
-        throw "INVALID_QUERY_INPUT";
+        throw logic_error("Bad call to min_query");
       }
       return query(0, n-1, qs, qe, 0, true);
     }
 
-    int max_query(int qs, int qe) {
+    T max_query(int qs, int qe) {
       if (qs < 0 || qe > n-1 || qs > qe) {
-        throw "INVALID_QUERY_INPUT";
+        throw logic_error("Bad call to max_query");
       }
       return query(0, n-1, qs, qe, 0, false);
     }
