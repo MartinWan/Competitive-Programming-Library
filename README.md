@@ -1,11 +1,9 @@
 # Competitive-Programming-Library
-A collections of algorithms & data structures for competitive programming, compiled
-from textbooks, online tutorials, and libraries modified for the goals of being  
+A collections of algorithms & data structures for competitive programming, 
+that are missing from either of the following:
+-Introduction to Algorithms 3rd Edition (CLRS)
+-Competitive Programming 3 (Halim Brothers)
+-Competitive Programming Material https://sites.google.com/site/stevenhalim/home/material 
 
--Dependency free (no copying & pasting allowed in the ACM-ICPC)  
--Short, Readable, Fast  
--Understood well by myself since many algorithmic challenges require these  
-data structures to be adapted or augmented to solve the problem (e.g. changing merge sort to count  
-inversions of an array rather than sort)  
 
 
